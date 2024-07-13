@@ -1,497 +1,505 @@
 ﻿using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Elrashid.WhatsApp.Api.Webhooks
 {
     public class WAppHokWebhookNotification
     {
-        [JsonProperty("object")]
+        [JsonPropertyName("object")]
         public string? Object { get; set; } // The webhook type (e.g., "whatsapp_business_account")
 
-        [JsonProperty("entry")]
+        [JsonPropertyName("entry")]
         public List<WAppHokEntry>? Entries { get; set; } // List of entries
+    }
+
+    public class WAppHokEntry
+    {
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // WhatsApp Business Account ID
+
+        [JsonPropertyName("changes")]
+        public List<WAppHokChange>? Changes { get; set; } // List of changes
+    }
 
-        public class WAppHokEntry
-        {
-            [JsonProperty("id")]
-            public string? Id { get; set; } // WhatsApp Business Account ID
+    public class WAppHokChange
+    {
+        [JsonPropertyName("value")]
+        public WAppHokValue? Value { get; set; } // Value object
 
-            [JsonProperty("changes")]
-            public List<WAppHokChange>? Changes { get; set; } // List of changes
+        [JsonPropertyName("field")]
+        public string? Field { get; set; } // Notification type (e.g., "messages")
+    }
 
-            public class WAppHokChange
-            {
-                [JsonProperty("value")]
-                public WAppHokValue? Value { get; set; } // Value object
+    public class WAppHokValue
+    {
+        [JsonPropertyName("messaging_product")]
+        public string? MessagingProduct { get; set; } // Product used to send the message (always "whatsapp")
 
-                [JsonProperty("field")]
-                public string? Field { get; set; } // Notification type (e.g., "messages")
+        [JsonPropertyName("metadata")]
+        public WAppHokMetadata? Metadata { get; set; } // Metadata object
 
-                public class WAppHokValue
-                {
-                    [JsonProperty("messaging_product")]
-                    public string? MessagingProduct { get; set; } // Product used to send the message (always "whatsapp")
+        [JsonPropertyName("contacts")]
+        public List<WAppHokContact>? Contacts { get; set; } // List of contacts
 
-                    [JsonProperty("metadata")]
-                    public WAppHokMetadata? Metadata { get; set; } // Metadata object
+        [JsonPropertyName("errors")]
+        public List<WAppHokError>? Errors { get; set; } // List of errors
 
-                    [JsonProperty("contacts")]
-                    public List<WAppHokContact>? Contacts { get; set; } // List of contacts
+        [JsonPropertyName("messages")]
+        public List<WAppHokMessage>? Messages { get; set; } // List of messages
 
-                    [JsonProperty("errors")]
-                    public List<WAppHokError>? Errors { get; set; } // List of errors
+        [JsonPropertyName("statuses")]
+        public List<WAppHokStatus>? Statuses { get; set; } // List of statuses
+    }
 
-                    [JsonProperty("messages")]
-                    public List<WAppHokMessage>? Messages { get; set; } // List of messages
+    public class WAppHokMetadata
+    {
+        [JsonPropertyName("display_phone_number")]
+        public string? DisplayPhoneNumber { get; set; } // Display phone number
 
-                    [JsonProperty("statuses")]
-                    public List<WAppHokStatus>? Statuses { get; set; } // List of statuses
+        [JsonPropertyName("phone_number_id")]
+        public string? PhoneNumberId { get; set; } // Phone number ID
+    }
 
-                    public class WAppHokMetadata
-                    {
-                        [JsonProperty("display_phone_number")]
-                        public string? DisplayPhoneNumber { get; set; } // Display phone number
+    public class WAppHokContact
+    {
+        [JsonPropertyName("wa_id")]
+        public string? WaId { get; set; } // Customer's WhatsApp ID
 
-                        [JsonProperty("phone_number_id")]
-                        public string? PhoneNumberId { get; set; } // Phone number ID
-                    }
+        [JsonPropertyName("profile")]
+        public WAppHokProfile? Profile { get; set; } // Profile object
+    }
 
-                    public class WAppHokContact
-                    {
-                        [JsonProperty("wa_id")]
-                        public string? WaId { get; set; } // Customer's WhatsApp ID
+    public class WAppHokProfile
+    {
+        [JsonPropertyName("name")]
+        public string? Name { get; set; } // Customer's name
+    }
 
-                        [JsonProperty("profile")]
-                        public WAppHokProfile? Profile { get; set; } // Profile object
+    public class WAppHokError
+    {
+        [JsonPropertyName("code")]
+        public int? Code { get; set; } // Error code
 
-                        public class WAppHokProfile
-                        {
-                            [JsonProperty("name")]
-                            public string? Name { get; set; } // Customer's name
-                        }
-                    }
+        [JsonPropertyName("title")]
+        public string? Title { get; set; } // Error title
 
-                    public class WAppHokError
-                    {
-                        [JsonProperty("code")]
-                        public int? Code { get; set; } // Error code
+        [JsonPropertyName("message")]
+        public string? Message { get; set; } // Error message
 
-                        [JsonProperty("title")]
-                        public string? Title { get; set; } // Error title
+        [JsonPropertyName("error_data")]
+        public WAppHokErrorData? ErrorData { get; set; } // Error data object
+    }
 
-                        [JsonProperty("message")]
-                        public string? Message { get; set; } // Error message
+    public class WAppHokErrorData
+    {
+        [JsonPropertyName("details")]
+        public string? Details { get; set; } // Error details
+    }
 
-                        [JsonProperty("error_data")]
-                        public WAppHokErrorData? ErrorData { get; set; } // Error data object
+    public class WAppHokMessage
+    {
+        [JsonPropertyName("from")]
+        public string? From { get; set; } // Customer's WhatsApp ID
 
-                        public class WAppHokErrorData
-                        {
-                            [JsonProperty("details")]
-                            public string? Details { get; set; } // Error details
-                        }
-                    }
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // Message ID
 
-                    public class WAppHokMessage
-                    {
-                        [JsonProperty("from")]
-                        public string? From { get; set; } // Customer's WhatsApp ID
+        [JsonPropertyName("timestamp")]
+        public string? Timestamp { get; set; } // Timestamp
 
-                        [JsonProperty("id")]
-                        public string? Id { get; set; } // Message ID
+        [JsonPropertyName("type")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public WAppHokMessageType? Type { get; set; } // Message type
 
-                        [JsonProperty("timestamp")]
-                        public string? Timestamp { get; set; } // Timestamp
+        [JsonPropertyName("text")]
+        public WAppHokText? Text { get; set; } // Text object
 
-                        [JsonProperty("type")]
-                        public WAppHokMessageType? Type { get; set; } // Message type
+        [JsonPropertyName("audio")]
+        public WAppHokAudio? Audio { get; set; } // Audio object
 
-                        [JsonProperty("text")]
-                        public WAppHokText? Text { get; set; } // Text object
+        [JsonPropertyName("button")]
+        public WAppHokButton? Button { get; set; } // Button object
 
-                        [JsonProperty("audio")]
-                        public WAppHokAudio? Audio { get; set; } // Audio object
+        [JsonPropertyName("context")]
+        public WAppHokContext? Context { get; set; } // Context object
 
-                        [JsonProperty("button")]
-                        public WAppHokButton? Button { get; set; } // Button object
+        [JsonPropertyName("document")]
+        public WAppHokDocument? Document { get; set; } // Document object
 
-                        [JsonProperty("context")]
-                        public WAppHokContext? Context { get; set; } // Context object
+        [JsonPropertyName("image")]
+        public WAppHokImage? Image { get; set; } // Image object
 
-                        [JsonProperty("document")]
-                        public WAppHokDocument? Document { get; set; } // Document object
+        [JsonPropertyName("interactive")]
+        public WAppHokInteractive? Interactive { get; set; } // Interactive object
 
-                        [JsonProperty("image")]
-                        public WAppHokImage? Image { get; set; } // Image object
+        [JsonPropertyName("order")]
+        public WAppHokOrder? Order { get; set; } // Order object
 
-                        [JsonProperty("interactive")]
-                        public WAppHokInteractive? Interactive { get; set; } // Interactive object
+        [JsonPropertyName("referral")]
+        public WAppHokReferral? Referral { get; set; } // Referral object
 
-                        [JsonProperty("order")]
-                        public WAppHokOrder? Order { get; set; } // Order object
+        [JsonPropertyName("sticker")]
+        public WAppHokSticker? Sticker { get; set; } // Sticker object
 
-                        [JsonProperty("referral")]
-                        public WAppHokReferral? Referral { get; set; } // Referral object
+        [JsonPropertyName("system")]
+        public WAppHokSystem? System { get; set; } // System object
 
-                        [JsonProperty("sticker")]
-                        public WAppHokSticker? Sticker { get; set; } // Sticker object
+        [JsonPropertyName("video")]
+        public WAppHokVideo? Video { get; set; } // Video object
+    }
 
-                        [JsonProperty("system")]
-                        public WAppHokSystem? System { get; set; } // System object
+    public class WAppHokText
+    {
+        [JsonPropertyName("body")]
+        public string? Body { get; set; } // Text body
+    }
 
-                        [JsonProperty("video")]
-                        public WAppHokVideo? Video { get; set; } // Video object
+    public class WAppHokAudio
+    {
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // Audio ID
 
-                        public class WAppHokText
-                        {
-                            [JsonProperty("body")]
-                            public string? Body { get; set; } // Text body
-                        }
+        [JsonPropertyName("mime_type")]
+        public string? MimeType { get; set; } // Mime type
+    }
 
-                        public class WAppHokAudio
-                        {
-                            [JsonProperty("id")]
-                            public string? Id { get; set; } // Audio ID
+    public class WAppHokButton
+    {
+        [JsonPropertyName("payload")]
+        public string? Payload { get; set; } // Button payload
 
-                            [JsonProperty("mime_type")]
-                            public string? MimeType { get; set; } // Mime type
-                        }
+        [JsonPropertyName("text")]
+        public string? Text { get; set; } // Button text
+    }
 
-                        public class WAppHokButton
-                        {
-                            [JsonProperty("payload")]
-                            public string? Payload { get; set; } // Button payload
+    public class WAppHokContext
+    {
+        [JsonPropertyName("forwarded")]
+        public bool? Forwarded { get; set; } // Forwarded flag
 
-                            [JsonProperty("text")]
-                            public string? Text { get; set; } // Button text
-                        }
+        [JsonPropertyName("frequently_forwarded")]
+        public bool? FrequentlyForwarded { get; set; } // Frequently forwarded flag
 
-                        public class WAppHokContext
-                        {
-                            [JsonProperty("forwarded")]
-                            public bool? Forwarded { get; set; } // Forwarded flag
+        [JsonPropertyName("from")]
+        public string? From { get; set; } // Customer's WhatsApp ID
 
-                            [JsonProperty("frequently_forwarded")]
-                            public bool? FrequentlyForwarded { get; set; } // Frequently forwarded flag
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // Message ID
 
-                            [JsonProperty("from")]
-                            public string? From { get; set; } // Customer's WhatsApp ID
+        [JsonPropertyName("referred_product")]
+        public WAppHokReferredProduct? ReferredProduct { get; set; } // Referred product object
+    }
 
-                            [JsonProperty("id")]
-                            public string? Id { get; set; } // Message ID
+    public class WAppHokReferredProduct
+    {
+        [JsonPropertyName("catalog_id")]
+        public string? CatalogId { get; set; } // Catalog ID
 
-                            [JsonProperty("referred_product")]
-                            public WAppHokReferredProduct? ReferredProduct { get; set; } // Referred product object
+        [JsonPropertyName("product_retailer_id")]
+        public string? ProductRetailerId { get; set; } // Product retailer ID
+    }
 
-                            public class WAppHokReferredProduct
-                            {
-                                [JsonProperty("catalog_id")]
-                                public string? CatalogId { get; set; } // Catalog ID
+    public class WAppHokDocument
+    {
+        [JsonPropertyName("caption")]
+        public string? Caption { get; set; } // Document caption
 
-                                [JsonProperty("product_retailer_id")]
-                                public string? ProductRetailerId { get; set; } // Product retailer ID
-                            }
-                        }
+        [JsonPropertyName("filename")]
+        public string? Filename { get; set; } // Document filename
 
-                        public class WAppHokDocument
-                        {
-                            [JsonProperty("caption")]
-                            public string? Caption { get; set; } // Document caption
+        [JsonPropertyName("sha256")]
+        public string? Sha256 { get; set; } // Document SHA256 hash
 
-                            [JsonProperty("filename")]
-                            public string? Filename { get; set; } // Document filename
+        [JsonPropertyName("mime_type")]
+        public string? MimeType { get; set; } // Mime type
 
-                            [JsonProperty("sha256")]
-                            public string? Sha256 { get; set; } // Document SHA256 hash
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // Document ID
+    }
 
-                            [JsonProperty("mime_type")]
-                            public string? MimeType { get; set; } // Mime type
+    public class WAppHokImage
+    {
+        [JsonPropertyName("caption")]
+        public string? Caption { get; set; } // Image caption
 
-                            [JsonProperty("id")]
-                            public string? Id { get; set; } // Document ID
-                        }
+        [JsonPropertyName("sha256")]
+        public string? Sha256 { get; set; } // Image SHA256 hash
 
-                        public class WAppHokImage
-                        {
-                            [JsonProperty("caption")]
-                            public string? Caption { get; set; } // Image caption
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // Image ID
 
-                            [JsonProperty("sha256")]
-                            public string? Sha256 { get; set; } // Image SHA256 hash
+        [JsonPropertyName("mime_type")]
+        public string? MimeType { get; set; } // Mime type
+    }
 
-                            [JsonProperty("id")]
-                            public string? Id { get; set; } // Image ID
+    public class WAppHokInteractive
+    {
+        [JsonPropertyName("type")]
+        public WAppHokInteractiveType? Type { get; set; } // Interactive type
+    }
 
-                            [JsonProperty("mime_type")]
-                            public string? MimeType { get; set; } // Mime type
-                        }
+    public class WAppHokInteractiveType
+    {
+        [JsonPropertyName("button_reply")]
+        public WAppHokButtonReply? ButtonReply { get; set; } // Button reply object
 
-                        public class WAppHokInteractive
-                        {
-                            [JsonProperty("type")]
-                            public WAppHokInteractiveType? Type { get; set; } // Interactive type
+        [JsonPropertyName("list_reply")]
+        public WAppHokListReply? ListReply { get; set; } // List reply object
+    }
 
-                            public class WAppHokInteractiveType
-                            {
-                                [JsonProperty("button_reply")]
-                                public WAppHokButtonReply? ButtonReply { get; set; } // Button reply object
+    public class WAppHokButtonReply
+    {
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // Button reply ID
 
-                                [JsonProperty("list_reply")]
-                                public WAppHokListReply? ListReply { get; set; } // List reply object
+        [JsonPropertyName("title")]
+        public string? Title { get; set; } // Button reply title
+    }
 
-                                public class WAppHokButtonReply
-                                {
-                                    [JsonProperty("id")]
-                                    public string? Id { get; set; } // Button reply ID
+    public class WAppHokListReply
+    {
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // List reply ID
 
-                                    [JsonProperty("title")]
-                                    public string? Title { get; set; } // Button reply title
-                                }
+        [JsonPropertyName("title")]
+        public string? Title { get; set; } // List reply title
 
-                                public class WAppHokListReply
-                                {
-                                    [JsonProperty("id")]
-                                    public string? Id { get; set; } // List reply ID
+        [JsonPropertyName("description")]
+        public string? Description { get; set; } // List reply description
+    }
 
-                                    [JsonProperty("title")]
-                                    public string? Title { get; set; } // List reply title
+    public class WAppHokOrder
+    {
+        [JsonPropertyName("catalog_id")]
+        public string? CatalogId { get; set; } // Catalog ID
 
-                                    [JsonProperty("description")]
-                                    public string? Description { get; set; } // List reply description
-                                }
-                            }
-                        }
+        [JsonPropertyName("text")]
+        public string? Text { get; set; } // Order text
 
-                        public class WAppHokOrder
-                        {
-                            [JsonProperty("catalog_id")]
-                            public string? CatalogId { get; set; } // Catalog ID
+        [JsonPropertyName("product_items")]
+        public List<WAppHokProductItem>? ProductItems { get; set; } // List of product items
+    }
 
-                            [JsonProperty("text")]
-                            public string? Text { get; set; } // Order text
+    public class WAppHokProductItem
+    {
+        [JsonPropertyName("product_retailer_id")]
+        public string? ProductRetailerId { get; set; } // Product retailer ID
 
-                            [JsonProperty("product_items")]
-                            public List<WAppHokProductItem>? ProductItems { get; set; } // List of product items
+        [JsonPropertyName("quantity")]
+        public string? Quantity { get; set; } // Quantity
 
-                            public class WAppHokProductItem
-                            {
-                                [JsonProperty("product_retailer_id")]
-                                public string? ProductRetailerId { get; set; } // Product retailer ID
+        [JsonPropertyName("item_price")]
+        public string? ItemPrice { get; set; } // Item price
 
-                                [JsonProperty("quantity")]
-                                public string? Quantity { get; set; } // Quantity
+        [JsonPropertyName("currency")]
+        public string? Currency { get; set; } // Currency
+    }
 
-                                [JsonProperty("item_price")]
-                                public string? ItemPrice { get; set; } // Item price
+    public class WAppHokReferral
+    {
+        [JsonPropertyName("source_url")]
+        public string? SourceUrl { get; set; } // Source URL
 
-                                [JsonProperty("currency")]
-                                public string? Currency { get; set; } // Currency
-                            }
-                        }
+        [JsonPropertyName("source_type")]
+        public string? SourceType { get; set; } // Source type
 
-                        public class WAppHokReferral
-                        {
-                            [JsonProperty("source_url")]
-                            public string? SourceUrl { get; set; } // Source URL
+        [JsonPropertyName("source_id")]
+        public string? SourceId { get; set; } // Source ID
 
-                            [JsonProperty("source_type")]
-                            public string? SourceType { get; set; } // Source type
+        [JsonPropertyName("headline")]
+        public string? Headline { get; set; } // Headline
 
-                            [JsonProperty("source_id")]
-                            public string? SourceId { get; set; } // Source ID
+        [JsonPropertyName("body")]
+        public string? Body { get; set; } // Body
 
-                            [JsonProperty("headline")]
-                            public string? Headline { get; set; } // Headline
+        [JsonPropertyName("media_type")]
+        public string? MediaType { get; set; } // Media type
 
-                            [JsonProperty("body")]
-                            public string? Body { get; set; } // Body
+        [JsonPropertyName("image_url")]
+        public string? ImageUrl { get; set; } // Image URL
 
-                            [JsonProperty("media_type")]
-                            public string? MediaType { get; set; } // Media type
+        [JsonPropertyName("video_url")]
+        public string? VideoUrl { get; set; } // Video URL
 
-                            [JsonProperty("image_url")]
-                            public string? ImageUrl { get; set; } // Image URL
+        [JsonPropertyName("thumbnail_url")]
+        public string? ThumbnailUrl { get; set; } // Thumbnail URL
 
-                            [JsonProperty("video_url")]
-                            public string? VideoUrl { get; set; } // Video URL
+        [JsonPropertyName("ctwa_clid")]
+        public string? CtwaClid { get; set; } // Click to WhatsApp click ID
+    }
 
-                            [JsonProperty("thumbnail_url")]
-                            public string? ThumbnailUrl { get; set; } // Thumbnail URL
+    public class WAppHokSticker
+    {
+        [JsonPropertyName("mime_type")]
+        public string? MimeType { get; set; } // Mime type
 
-                            [JsonProperty("ctwa_clid")]
-                            public string? CtwaClid { get; set; } // Click to WhatsApp click ID
-                        }
+        [JsonPropertyName("sha256")]
+        public string? Sha256 { get; set; } // SHA256 hash
 
-                        public class WAppHokSticker
-                        {
-                            [JsonProperty("mime_type")]
-                            public string? MimeType { get; set; } // Mime type
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // Sticker ID
 
-                            [JsonProperty("sha256")]
-                            public string? Sha256 { get; set; } // SHA256 hash
+        [JsonPropertyName("animated")]
+        public bool? Animated { get; set; } // Animated flag
+    }
 
-                            [JsonProperty("id")]
-                            public string? Id { get; set; } // Sticker ID
+    public class WAppHokSystem
+    {
+        [JsonPropertyName("body")]
+        public string? Body { get; set; } // System body
 
-                            [JsonProperty("animated")]
-                            public bool? Animated { get; set; } // Animated flag
-                        }
+        [JsonPropertyName("identity")]
+        public string? Identity { get; set; } // Identity
 
-                        public class WAppHokSystem
-                        {
-                            [JsonProperty("body")]
-                            public string? Body { get; set; } // System body
+        [JsonPropertyName("new_wa_id")]
+        public string? NewWaId { get; set; } // New WhatsApp ID
 
-                            [JsonProperty("identity")]
-                            public string? Identity { get; set; } // Identity
+        [JsonPropertyName("wa_id")]
+        public string? WaId { get; set; } // WhatsApp ID
 
-                            [JsonProperty("new_wa_id")]
-                            public string? NewWaId { get; set; } // New WhatsApp ID
+        [JsonPropertyName("type")]
+        public string? Type { get; set; } // System type
 
-                            [JsonProperty("wa_id")]
-                            public string? WaId { get; set; } // WhatsApp ID
+        [JsonPropertyName("customer")]
+        public string? Customer { get; set; } // Customer
+    }
 
-                            [JsonProperty("type")]
-                            public string? Type { get; set; } // System type
+    public class WAppHokVideo
+    {
+        [JsonPropertyName("caption")]
+        public string? Caption { get; set; } // Video caption
 
-                            [JsonProperty("customer")]
-                            public string? Customer { get; set; } // Customer
-                        }
+        [JsonPropertyName("filename")]
+        public string? Filename { get; set; } // Video filename
 
-                        public class WAppHokVideo
-                        {
-                            [JsonProperty("caption")]
-                            public string? Caption { get; set; } // Video caption
+        [JsonPropertyName("sha256")]
+        public string? Sha256 { get; set; } // SHA256 hash
 
-                            [JsonProperty("filename")]
-                            public string? Filename { get; set; } // Video filename
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // Video ID
 
-                            [JsonProperty("sha256")]
-                            public string? Sha256 { get; set; } // SHA256 hash
+        [JsonPropertyName("mime_type")]
+        public string? MimeType { get; set; } // Mime type
+    }
 
-                            [JsonProperty("id")]
-                            public string? Id { get; set; } // Video ID
+    public class WAppHokStatus
+    {
+        [JsonPropertyName("biz_opaque_callback_data")]
+        public string? BizOpaqueCallbackData { get; set; } // Callback data
 
-                            [JsonProperty("mime_type")]
-                            public string? MimeType { get; set; } // Mime type
-                        }
+        [JsonPropertyName("conversation")]
+        public WAppHokConversation? Conversation { get; set; } // Conversation object
 
-                        public enum WAppHokMessageType
-                        {
-                            text,
-                            audio,
-                            button,
-                            document,
-                            image,
-                            interactive,
-                            order,
-                            referral,
-                            sticker,
-                            system,
-                            video
-                        }
-                    }
-
-                    public class WAppHokStatus
-                    {
-                        [JsonProperty("biz_opaque_callback_data")]
-                        public string? BizOpaqueCallbackData { get; set; } // Callback data
-
-                        [JsonProperty("conversation")]
-                        public WAppHokConversation? Conversation { get; set; } // Conversation object
-
-                        [JsonProperty("errors")]
-                        public List<WAppHokError>? Errors { get; set; } // List of errors
-
-                        [JsonProperty("id")]
-                        public string? Id { get; set; } // Status ID
-
-                        [JsonProperty("pricing")]
-                        public WAppHokPricing? Pricing { get; set; } // Pricing object
-
-                        [JsonProperty("recipient_id")]
-                        public string? RecipientId { get; set; } // Recipient ID
-
-                        [JsonProperty("status")]
-                        public WAppHokStatusType? StatusValue { get; set; } // Status value
-
-                        [JsonProperty("timestamp")]
-                        public string? Timestamp { get; set; } // Timestamp
-
-                        public class WAppHokConversation
-                        {
-                            [JsonProperty("id")]
-                            public string? Id { get; set; } // Conversation ID
-
-                            [JsonProperty("origin")]
-                            public WAppHokOrigin? Origin { get; set; } // Origin object
-
-                            [JsonProperty("expiration_timestamp")]
-                            public string? ExpirationTimestamp { get; set; } // Expiration timestamp
-
-                            public class WAppHokOrigin
-                            {
-                                [JsonProperty("type")]
-                                public WAppHokOriginType? Type { get; set; } // Origin type
-
-                                [JsonProperty("authentication")]
-                                public string? Authentication { get; set; } // Authentication
-
-                                [JsonProperty("marketing")]
-                                public string? Marketing { get; set; } // Marketing
-
-                                [JsonProperty("utility")]
-                                public string? Utility { get; set; } // Utility
-
-                                [JsonProperty("service")]
-                                public string? Service { get; set; } // Service
-
-                                [JsonProperty("referral_conversion")]
-                                public string? ReferralConversion { get; set; } // Referral conversion
-
-                                public enum WAppHokOriginType
-                                {
-                                    authentication,
-                                    marketing,
-                                    utility,
-                                    service,
-                                    referral_conversion
-                                }
-                            }
-                        }
-
-                        public class WAppHokPricing
-                        {
-                            [JsonProperty("billable")]
-                            public bool? Billable { get; set; } // Billable flag
-
-                            [JsonProperty("category")]
-                            public WAppHokPricingCategory? Category { get; set; } // Pricing category
-
-                            [JsonProperty("pricing_model")]
-                            public string? PricingModel { get; set; } // Pricing model
-
-                            public enum WAppHokPricingCategory
-                            {
-                                authentication,
-                                authentication_international,
-                                marketing,
-                                utility,
-                                service,
-                                referral_conversion
-                            }
-                        }
-
-                        public enum WAppHokStatusType
-                        {
-                            delivered,
-                            read,
-                            sent
-                        }
-                    }
-                }
-            }
-        }
+        [JsonPropertyName("errors")]
+        public List<WAppHokError>? Errors { get; set; } // List of errors
+
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // Status ID
+
+        [JsonPropertyName("pricing")]
+        public WAppHokPricing? Pricing { get; set; } // Pricing object
+
+        [JsonPropertyName("recipient_id")]
+        public string? RecipientId { get; set; } // Recipient ID
+
+        [JsonPropertyName("status")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public WAppHokStatusType? StatusValue { get; set; } // Status value
+
+        [JsonPropertyName("timestamp")]
+        public string? Timestamp { get; set; } // Timestamp
+    }
+
+    public class WAppHokConversation
+    {
+        [JsonPropertyName("id")]
+        public string? Id { get; set; } // Conversation ID
+
+        [JsonPropertyName("origin")]
+        public WAppHokOrigin? Origin { get; set; } // Origin object
+
+        [JsonPropertyName("expiration_timestamp")]
+        public string? ExpirationTimestamp { get; set; } // Expiration timestamp
+    }
+
+    public class WAppHokOrigin
+    {
+        [JsonPropertyName("type")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public WAppHokOriginType? Type { get; set; } // Origin type
+
+        [JsonPropertyName("authentication")]
+        public string? Authentication { get; set; } // Authentication
+
+        [JsonPropertyName("marketing")]
+        public string? Marketing { get; set; } // Marketing
+
+        [JsonPropertyName("utility")]
+        public string? Utility { get; set; } // Utility
+
+        [JsonPropertyName("service")]
+        public string? Service { get; set; } // Service
+
+        [JsonPropertyName("referral_conversion")]
+        public string? ReferralConversion { get; set; } // Referral conversion
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum WAppHokOriginType
+    {
+        authentication,
+        marketing,
+        utility,
+        service,
+        referral_conversion
+    }
+
+    public class WAppHokPricing
+    {
+        [JsonPropertyName("billable")]
+        public bool? Billable { get; set; } // Billable flag
+
+        [JsonPropertyName("category")]
+        [JsonConverter(typeof(JsonStringEnumConverter))]
+        public WAppHokPricingCategory? Category { get; set; } // Pricing category
+
+        [JsonPropertyName("pricing_model")]
+        public string? PricingModel { get; set; } // Pricing model
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum WAppHokPricingCategory
+    {
+        authentication,
+        authentication_international,
+        marketing,
+        utility,
+        service,
+        referral_conversion
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum WAppHokStatusType
+    {
+        delivered,
+        read,
+        sent
+    }
+
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public enum WAppHokMessageType
+    {
+        text,
+        audio,
+        button,
+        document,
+        image,
+        interactive,
+        order,
+        referral,
+        sticker,
+        system,
+        video
     }
 }
